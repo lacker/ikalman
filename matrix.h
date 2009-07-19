@@ -2,7 +2,7 @@
 #define __MATRIX_H__
 
 /* The type we use for all math. */
-typedef Number double;
+typedef double Number;
 
 /* Copy a m*n matrix. */
 void m_copy(Number** source, Number** destination,
