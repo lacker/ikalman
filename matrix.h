@@ -1,14 +1,28 @@
 #ifndef __MATRIX_H__
 #define __MATRIX_H__
 
-/* The type we use for all math. */
-typedef double Number;
+typedef struct {
+  /* Dimensions */
+  int rows;
+  int cols;
 
-/* Copy a m*n matrix. */
-void m_copy(Number** source, Number** destination,
-	    int m, int n);
+  /* Contents of the matrix */
+  double** data;
+} Matrix;
 
-/* Pretty-print a m*n matrix. */
-void m_print(Number** matrix, int m, int n);
+/* Allocate memory for a new matrix.
+   Zeros out the matrix.
+   Assert-fails if we are out of memory.
+*/
+Matrix alloc_matrix(int rows, int cols);
+
+/* Free memory for a matrix. */
+void free_matrix(Matrix m);
+
+/* Copy a matrix. */
+void copy_matrix(Matrix source, Matrix destination);
+
+/* Pretty-print a matrix. */
+void print_matrix(Matrix m);
 
 #endif
