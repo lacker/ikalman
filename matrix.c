@@ -102,6 +102,19 @@ void subtract_matrix(Matrix a, Matrix b, Matrix c) {
   }
 }
 
+void subtract_from_identity_matrix(Matrix a) {
+  assert(a.rows == a.cols);
+  for (int i = 0; i < a.rows; ++i) {
+    for (int j = 0; j < a.cols; ++j) {
+      if (i == j) {
+	a.data[i][j] = 1.0 - a.data[i][j];
+      } else {
+	a.data[i][j] = 0.0 - a.data[i][j];
+      }
+    }
+  }
+}
+
 void multiply_matrix(Matrix a, Matrix b, Matrix c) {
   assert(a.cols == b.rows);
   assert(a.rows == c.rows);
@@ -113,6 +126,24 @@ void multiply_matrix(Matrix a, Matrix b, Matrix c) {
       c.data[i][j] = 0.0;
       for (int k = 0; k < a.cols; ++k) {
 	c.data[i][j] += a.data[i][k] * b.data[k][j];
+      }
+    }
+  }
+}
+
+/* This is multiplying a by b-tranpose so it is like multiply_matrix
+   but references to b reverse rows and cols. */
+void multiply_by_transpose_matrix(Matrix a, Matrix b, Matrix c) {
+  assert(a.cols == b.cols);
+  assert(a.rows == c.rows);
+  assert(b.rows == c.cols);
+  for (int i = 0; i < c.rows; ++i) {
+    for (int j = 0; j < c.cols; ++j) {
+      /* Calculate element c.data[i][j] via a dot product of one row of a
+	 with one row of b */
+      c.data[i][j] = 0.0;
+      for (int k = 0; k < a.cols; ++k) {
+	c.data[i][j] += a.data[i][k] * b.data[j][k];
       }
     }
   }

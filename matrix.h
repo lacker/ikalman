@@ -41,8 +41,14 @@ void add_matrix(Matrix a, Matrix b, Matrix c);
 /* Subtract matrices a and b and put the result in c. */
 void subtract_matrix(Matrix a, Matrix b, Matrix c);
 
+/* Subtract from the identity matrix in place. */
+void subtract_from_identity_matrix(Matrix a);
+
 /* Multiply matrices a and b and put the result in c. */
 void multiply_matrix(Matrix a, Matrix b, Matrix c);
+
+/* Multiply matrix a by b-transpose and put the result in c. */
+void multiply_by_transpose_matrix(Matrix a, Matrix b, Matrix c);
 
 /* Transpose input and put the result in output. */
 void transpose_matrix(Matrix input, Matrix output);
