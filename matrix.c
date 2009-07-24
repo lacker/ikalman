@@ -172,6 +172,15 @@ bool equal_matrix(Matrix a, Matrix b, double tolerance) {
   return true;
 }
 
+void scale_matrix(Matrix m, double scalar) {
+  assert(scalar != 0.0);
+  for (int i = 0; i < m.rows; ++i) {
+    for (int j = 0; j < m.cols; ++j) {
+      m.data[i][j] *= scalar;
+    }
+  }
+}
+
 void swap_rows(Matrix m, int r1, int r2) {
   assert(r1 != r2);
   double* tmp = m.data[r1];

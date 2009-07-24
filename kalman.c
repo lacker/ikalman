@@ -67,6 +67,11 @@ void free_filter(KalmanFilter f) {
 }
 
 void update(KalmanFilter f) {
+  predict(f);
+  estimate(f);
+}
+
+void predict(KalmanFilter f) {
   f.timestep++;
 
   /* Predict the state */
@@ -75,12 +80,14 @@ void update(KalmanFilter f) {
 
   /* Predict the state estimate covariance */
   multiply_matrix(f.state_transition, f.estimate_covariance,
-		  f.vertical_scratch);
-  multiply_by_transpose_matrix(f.vertical_scratch, f.state_transition,
+		  f.big_square_scratch);
+  multiply_by_transpose_matrix(f.big_square_scratch, f.state_transition,
 			       f.predicted_estimate_covariance);
   add_matrix(f.predicted_estimate_covariance, f.process_noise_covariance,
 	     f.predicted_estimate_covariance);
+}
 
+void estimate(KalmanFilter f) {
   /* Calculate innovation */
   multiply_matrix(f.observation_model, f.predicted_state,
 		  f.innovation);

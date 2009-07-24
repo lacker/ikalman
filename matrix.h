@@ -56,6 +56,9 @@ void transpose_matrix(Matrix input, Matrix output);
 /* Whether two matrices are approximately equal. */
 bool equal_matrix(Matrix a, Matrix b, double tolerance);
 
+/* Multiply a matrix by a scalar. */
+void scale_matrix(Matrix m, double scalar);
+
 /* Swap rows r1 and r2 of a matrix.
    This is one of the three "elementary row operations". */
 void swap_rows(Matrix m, int r1, int r2);

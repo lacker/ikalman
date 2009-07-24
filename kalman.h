@@ -64,15 +64,26 @@ KalmanFilter alloc_filter(int state_dimension,
 
 void free_filter(KalmanFilter f);
 
-/* Runs one timestep of prediction.
+/* Runs one timestep of prediction + estimation.
+
    Before each time step of running this, set f.observation to be the
    next time step's observation.
-   Before any time steps of running this, set:
+
+   Before the first step, define the model by setting:
    f.state_transition
    f.observation_model
    f.process_noise_covariance
    f.observation_noise_covariance
+
+   It is also advisable to initialize with reasonable guesses for
+   f.state_estimate
+   f.estimate_covariance
 */
 void update(KalmanFilter f);
+
+/* Just the prediction phase of update. */
+void predict(KalmanFilter f);
+/* Just the estimation phase of update. */
+void estimate(KalmanFilter f);
 
 #endif

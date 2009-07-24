@@ -7,3 +7,6 @@ OBJECTS = matrix.o kalman.o
 
 %.o : %.c
 	$(CC) $(CFLAGS) -c $<
+
+clean :
+	rm *.o *_test
