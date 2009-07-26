@@ -1,3 +1,14 @@
+/* To use these functions:
+
+   1. Start with a KalmanFilter created by alloc_filter_velocity2d.
+   2. At fixed intervals, call update_velocity2d with the lat/long.
+   3. At any time, to get an estimate for the current position,
+   heading, or speed, use the functions:
+     get_lat_long
+     get_heading
+     get_mph
+ */
+
 #ifndef __GPS_H__
 #define __GPS_H__
 
