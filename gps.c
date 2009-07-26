@@ -56,3 +56,21 @@ KalmanFilter alloc_filter_velocity2d() {
 
   return f;
 }
+
+
+bool read_lat_long(FILE* file, double* lat, double* lon) {
+  while (true) {
+    /* If we find a lat long pair, we're done */
+    if (2 == fscanf(file, "%lf,%lf", lat, lon)) {
+      return true;
+    }
+
+    /* Advance to the next line */
+    int ch;
+    while ((ch = getc(file)) != '\n') {
+      if (EOF == ch) {
+	return false;
+      }
+    }
+  }
+}
