@@ -24,6 +24,7 @@ Matrix alloc_matrix(int rows, int cols) {
 }
 
 void free_matrix(Matrix m) {
+  assert(m.data != NULL);
   for (int i = 0; i < m.rows; ++i) {
     free(m.data[i]);
   }
