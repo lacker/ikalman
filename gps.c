@@ -1,6 +1,10 @@
 /* Applying Kalman filters to GPS data. */
 
+#include <assert.h>
+#include <math.h>
 #include "gps.h"
+
+static const double PI = 3.14159265;
 
 KalmanFilter alloc_filter_velocity2d() {
   /* The state model has four dimensions:
@@ -57,6 +61,10 @@ KalmanFilter alloc_filter_velocity2d() {
   return f;
 }
 
+void update_velocity2d(KalmanFilter f, double lat, double lon) {
+  set_matrix(f.observation, lat * 1000.0, lon * 1000.0);
+  update(f);
+}
 
 bool read_lat_long(FILE* file, double* lat, double* lon) {
   while (true) {
@@ -73,4 +81,54 @@ bool read_lat_long(FILE* file, double* lat, double* lon) {
       }
     }
   }
+}
+
+
+void get_lat_long(KalmanFilter f, double* lat, double* lon) {
+  *lat = f.state_estimate.data[0][0] / 1000.0;
+  *lon = f.state_estimate.data[1][0] / 1000.0;
+}
+
+
+void get_velocity(KalmanFilter f, double* delta_lat, double* delta_lon) {
+  *delta_lat = f.state_estimate.data[2][0] * 1000.0 * 1000.0;
+  *delta_lon = f.state_estimate.data[3][0] * 1000.0 * 1000.0;
+}
+
+/* See
+   http://www.movable-type.co.uk/scripts/latlong.html
+   for formulas */
+double get_heading(KalmanFilter f) {
+  double lat, lon, delta_lat, delta_lon, x, y;
+  get_lat_long(f, &lat, &lon);
+  get_velocity(f, &delta_lat, &delta_lon);
+
+  /* Convert to radians */
+  double to_radians = PI / 180.0;
+  lat *= to_radians;
+  lon *= to_radians;
+  delta_lat *= to_radians;
+  delta_lon *= to_radians;
+  
+  /* Do math */
+  double lat1 = lat - delta_lat;
+  y = sin(delta_lon) * cos(lat);
+  x = cos(lat1) * sin(lat) - sin(lat1) * cos(lat) * cos(delta_lon);
+  double bearing = atan2(y, x);
+
+  /* Convert to degrees */
+  bearing = bearing / to_radians + 180;
+  while (bearing >= 360.0) {
+    bearing -= 360.0;
+  }
+  while (bearing < 0.0) {
+    bearing += 360.0;
+  }
+    
+  return bearing;
+}
+
+
+double get_mph(KalmanFilter f, double timestep) {
+  assert(0); /* not implemented */
 }

@@ -9,4 +9,4 @@ OBJECTS = matrix.o kalman.o gps.o
 	$(CC) $(CFLAGS) -c $<
 
 clean :
-	rm *.o *_test
+	rm -f *.o *_test
