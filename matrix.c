@@ -160,17 +160,17 @@ void transpose_matrix(Matrix input, Matrix output) {
   }
 }
 
-bool equal_matrix(Matrix a, Matrix b, double tolerance) {
+int equal_matrix(Matrix a, Matrix b, double tolerance) {
   assert(a.rows == b.rows);
   assert(a.cols == b.cols);
   for (int i = 0; i < a.rows; ++i) {
     for (int j = 0; j < a.cols; ++j) {
       if (abs(a.data[i][j] - b.data[i][j]) > tolerance) {
-	return false;
+	return 0;
       }
     }
   }
-  return true;
+  return 1;
 }
 
 void scale_matrix(Matrix m, double scalar) {
@@ -215,7 +215,7 @@ void shear_row(Matrix m, int r1, int r2, double scalar) {
    
    This is not the fastest way to invert matrices, so this is quite
    possibly the bottleneck. */
-bool destructive_invert_matrix(Matrix input, Matrix output) {
+int destructive_invert_matrix(Matrix input, Matrix output) {
   assert(input.rows == input.cols);
   assert(input.rows == output.rows);
   assert(input.rows == output.cols);
@@ -237,7 +237,7 @@ bool destructive_invert_matrix(Matrix input, Matrix output) {
       if (r == input.rows) {
 	/* Every remaining element in this column is zero, so this
 	   matrix cannot be inverted. */
-	return false;
+	return 0;
       }
       swap_rows(input, i, r);
       swap_rows(output, i, r);
@@ -260,5 +260,5 @@ bool destructive_invert_matrix(Matrix input, Matrix output) {
     }
   }
   
-  return true;
+  return 1;
 }

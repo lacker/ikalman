@@ -28,7 +28,7 @@ void update_velocity2d(KalmanFilter f, double lat, double lon);
 /* Read a lat,long pair from a file.
    Format is lat,long<ignored>
    Return whether there was a lat,long to be read */
-bool read_lat_long(FILE* file, double* lat, double* lon);
+int read_lat_long(FILE* file, double* lat, double* lon);
 
 /* Extract a lat long from a velocity2d Kalman filter. */
 void get_lat_long(KalmanFilter f, double* lat, double* lon);

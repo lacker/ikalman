@@ -67,18 +67,18 @@ void update_velocity2d(KalmanFilter f, double lat, double lon) {
   update(f);
 }
 
-bool read_lat_long(FILE* file, double* lat, double* lon) {
-  while (true) {
+int read_lat_long(FILE* file, double* lat, double* lon) {
+  while (1) {
     /* If we find a lat long pair, we're done */
     if (2 == fscanf(file, "%lf,%lf", lat, lon)) {
-      return true;
+      return 1;
     }
 
     /* Advance to the next line */
     int ch;
     while ((ch = getc(file)) != '\n') {
       if (EOF == ch) {
-	return false;
+	return 0;
       }
     }
   }

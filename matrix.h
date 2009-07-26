@@ -1,10 +1,6 @@
 #ifndef __MATRIX_H__
 #define __MATRIX_H__
 
-typedef int bool;
-#define false 0
-#define true 1
-
 typedef struct {
   /* Dimensions */
   int rows;
@@ -54,7 +50,7 @@ void multiply_by_transpose_matrix(Matrix a, Matrix b, Matrix c);
 void transpose_matrix(Matrix input, Matrix output);
 
 /* Whether two matrices are approximately equal. */
-bool equal_matrix(Matrix a, Matrix b, double tolerance);
+int equal_matrix(Matrix a, Matrix b, double tolerance);
 
 /* Multiply a matrix by a scalar. */
 void scale_matrix(Matrix m, double scalar);
@@ -75,6 +71,6 @@ void shear_row(Matrix m, int r1, int r2, double scalar);
 /* Invert a square matrix.
    Returns whether the matrix is invertible.
    input is mutated as well by this routine. */
-bool destructive_invert_matrix(Matrix input, Matrix output);
+int destructive_invert_matrix(Matrix input, Matrix output);
 
 #endif
