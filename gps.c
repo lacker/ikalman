@@ -99,7 +99,7 @@ void get_velocity(KalmanFilter f, double* delta_lat, double* delta_lon) {
 /* See
    http://www.movable-type.co.uk/scripts/latlong.html
    for formulas */
-double get_heading(KalmanFilter f) {
+double get_bearing(KalmanFilter f) {
   double lat, lon, delta_lat, delta_lon, x, y;
   get_lat_long(f, &lat, &lon);
   get_velocity(f, &delta_lat, &delta_lon);

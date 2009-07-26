@@ -24,14 +24,14 @@ void test_read_lat_long() {
   fclose(file);
 }
 
-void test_heading_north() {
+void test_bearing_north() {
   KalmanFilter f = alloc_filter_velocity2d();
   for (int i = 0; i < 100; ++i) {
     update_velocity2d(f, i * 0.0001, 0.0);
   }
 
-  double heading = get_heading(f);
-  assert(abs(heading - 0.0) < 0.01);
+  double bearing = get_bearing(f);
+  assert(abs(bearing - 0.0) < 0.01);
   
   /* Velocity should be 0.0001 x units per timestep */
   double dlat, dlon;
@@ -42,14 +42,14 @@ void test_heading_north() {
   free_filter(f);
 }
 
-void test_heading_east() {
+void test_bearing_east() {
   KalmanFilter f = alloc_filter_velocity2d();
   for (int i = 0; i < 100; ++i) {
     update_velocity2d(f, 0.0, i * 0.0001);
   }
 
-  double heading = get_heading(f);
-  assert(abs(heading - 90.0) < 0.01);
+  double bearing = get_bearing(f);
+  assert(abs(bearing - 90.0) < 0.01);
 
   /* At this rate, it takes 10,000 timesteps to travel one longitude
      unit, and thus 3,600,000 timesteps to travel the circumference of
@@ -63,36 +63,36 @@ void test_heading_east() {
   free_filter(f);
 }
 
-void test_heading_south() {
+void test_bearing_south() {
   KalmanFilter f = alloc_filter_velocity2d();
   for (int i = 0; i < 100; ++i) {
     update_velocity2d(f, i * -0.0001, 0.0);
   }
 
-  double heading = get_heading(f);
-  assert(abs(heading - 180.0) < 0.01);
+  double bearing = get_bearing(f);
+  assert(abs(bearing - 180.0) < 0.01);
   
   free_filter(f);
 }
 
-void test_heading_west() {
+void test_bearing_west() {
   KalmanFilter f = alloc_filter_velocity2d();
   for (int i = 0; i < 100; ++i) {
     update_velocity2d(f, 0.0, i * -0.0001);
   }
 
-  double heading = get_heading(f);
-  assert(abs(heading - 270.0) < 0.01);
+  double bearing = get_bearing(f);
+  assert(abs(bearing - 270.0) < 0.01);
   
   free_filter(f);
 }
 
 int main(int argc, char *argv[]) {
   test_read_lat_long();
-  test_heading_north();
-  test_heading_east();
-  test_heading_south();
-  test_heading_west();
+  test_bearing_north();
+  test_bearing_east();
+  test_bearing_south();
+  test_bearing_west();
   printf("OK\n");
   return 0;
 }
