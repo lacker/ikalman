@@ -5,6 +5,7 @@
 #include "gps.h"
 
 static const double PI = 3.14159265;
+static const double EARTH_RADIUS_IN_MILES = 3963.1676;
 
 KalmanFilter alloc_filter_velocity2d() {
   /* The state model has four dimensions:
@@ -16,7 +17,7 @@ KalmanFilter alloc_filter_velocity2d() {
 
   /* The position units are in thousandths of latitude and longitude.
      The velocity units are in thousandths of position units per timestep.
-     So a velocity of 1 will change the position by 1 after a million
+     So a velocity of 1 will change the lat or long by 1 after a million
      timesteps.
 
      Thus a typical position is hundreds of thousands of units.
@@ -91,8 +92,8 @@ void get_lat_long(KalmanFilter f, double* lat, double* lon) {
 
 
 void get_velocity(KalmanFilter f, double* delta_lat, double* delta_lon) {
-  *delta_lat = f.state_estimate.data[2][0] * 1000.0 * 1000.0;
-  *delta_lon = f.state_estimate.data[3][0] * 1000.0 * 1000.0;
+  *delta_lat = f.state_estimate.data[2][0] / (1000.0 * 1000.0);
+  *delta_lon = f.state_estimate.data[3][0] / (1000.0 * 1000.0);
 }
 
 /* See
@@ -117,7 +118,7 @@ double get_heading(KalmanFilter f) {
   double bearing = atan2(y, x);
 
   /* Convert to degrees */
-  bearing = bearing / to_radians + 180;
+  bearing = bearing / to_radians;
   while (bearing >= 360.0) {
     bearing -= 360.0;
   }
@@ -129,6 +130,33 @@ double get_heading(KalmanFilter f) {
 }
 
 
-double get_mph(KalmanFilter f, double timestep) {
-  assert(0); /* not implemented */
+double get_mph(KalmanFilter f, double seconds_per_reading) {
+  /* First, let's calculate a unit-independent measurement - the radii
+     of the earth traveled in each timestep. (Presumably this will be
+     a very small number.) */
+  double lat, lon, delta_lat, delta_lon;
+  get_lat_long(f, &lat, &lon);
+  get_velocity(f, &delta_lat, &delta_lon);
+  
+  /* Convert to radians */
+  double to_radians = PI / 180.0;
+  lat *= to_radians;
+  lon *= to_radians;
+  delta_lat *= to_radians;
+  delta_lon *= to_radians;
+
+  /* Haversine formula */
+  double lat1 = lat - delta_lat;
+  double sin_half_dlat = sin(delta_lat / 2.0);
+  double sin_half_dlon = sin(delta_lon / 2.0);
+  double a = sin_half_dlat * sin_half_dlat + cos(lat1) * cos(lat)
+    * sin_half_dlon * sin_half_dlon;
+  double radians_per_timestep = 2 * atan2(sqrt(a), sqrt(1.0 - a));
+  
+  /* Convert units */
+  double miles_per_timestep = radians_per_timestep * EARTH_RADIUS_IN_MILES;
+  double miles_per_second = miles_per_timestep / seconds_per_reading;
+  double miles_per_hour = miles_per_second * 60.0 * 60.0;
+  return miles_per_hour;
 }
+

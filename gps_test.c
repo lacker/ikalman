@@ -33,6 +33,12 @@ void test_heading_north() {
   double heading = get_heading(f);
   assert(abs(heading - 0.0) < 0.01);
   
+  /* Velocity should be 0.0001 x units per timestep */
+  double dlat, dlon;
+  get_velocity(f, &dlat, &dlon);
+  assert(abs(dlat - 0.0001) < 0.00001);
+  assert(abs(dlon) < 0.00001);
+  
   free_filter(f);
 }
 
@@ -44,6 +50,15 @@ void test_heading_east() {
 
   double heading = get_heading(f);
   assert(abs(heading - 90.0) < 0.01);
+
+  /* At this rate, it takes 10,000 timesteps to travel one longitude
+     unit, and thus 3,600,000 timesteps to travel the circumference of
+     the earth. Let's say one timestep is a second, so it takes
+     3,600,000 seconds, which is 60,000 minutes, which is 1,000
+     hours. Since the earth is about 25000 miles around, this means we
+     are traveling at about 25 miles per hour. */
+  double mph = get_mph(f, 1.0);
+  assert(abs(mph - 25.0) < 2.0);
   
   free_filter(f);
 }
@@ -72,20 +87,12 @@ void test_heading_west() {
   free_filter(f);
 }
 
-/* Test the 2d velocity-only model */
-void test_velocity2d() {
-  KalmanFilter f = alloc_filter_velocity2d();
-
-  free_filter(f);
-}
-
 int main(int argc, char *argv[]) {
   test_read_lat_long();
   test_heading_north();
   test_heading_east();
   test_heading_south();
   test_heading_west();
-  test_velocity2d();
   printf("OK\n");
   return 0;
 }

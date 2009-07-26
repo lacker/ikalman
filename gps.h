@@ -32,7 +32,7 @@ void get_velocity(KalmanFilter f, double* delta_lat, double* delta_lon);
 double get_heading(KalmanFilter f);
 
 /* Extract speed in miles per hour from a velocity2d Kalman filter.
-   timestep is the time in seconds between each reading. */
-double get_mph(KalmanFilter f, double timestep);
+   seconds_per_reading time in seconds between each reading. */
+double get_mph(KalmanFilter f, double seconds_per_reading);
 
 #endif
