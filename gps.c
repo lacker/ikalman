@@ -15,26 +15,15 @@ KalmanFilter alloc_filter_velocity2d() {
   */
   KalmanFilter f = alloc_filter(4, 2);
 
-  /* The position units are in thousandths of latitude and longitude.
-     The velocity units are in thousandths of position units per timestep.
-     So a velocity of 1 will change the lat or long by 1 after a million
-     timesteps.
-
-     Thus a typical position is hundreds of thousands of units.
-     A typical velocity is maybe ten.
-     
-     Assuming the axes are rectilinear does not work well at the
+  /* Assuming the axes are rectilinear does not work well at the
      poles, but it has the bonus that we don't need to convert between
      lat/long and more rectangular coordinates. The slight inaccuracy
      of our physics model is not too important.
    */
   double v2p = 0.001;
-  set_matrix(f.state_transition,
-	     1.0, 0.0, v2p, 0.0,
-	     0.0, 1.0, 0.0, v2p,
-	     0.0, 0.0, 1.0, 0.0,
-	     0.0, 0.0, 0.0, 1.0);
-
+  set_identity_matrix(f.state_transition);
+  set_seconds_per_timestep(f, 1.0);
+	     
   /* We observe (x, y) in each time step */
   set_matrix(f.observation_model,
 	     1.0, 0.0, 0.0, 0.0,
@@ -62,7 +51,28 @@ KalmanFilter alloc_filter_velocity2d() {
   return f;
 }
 
-void update_velocity2d(KalmanFilter f, double lat, double lon) {
+
+/* The position units are in thousandths of latitude and longitude.
+   The velocity units are in thousandths of position units per second.
+
+   So if there is one second per timestep, a velocity of 1 will change
+   the lat or long by 1 after a million timesteps.
+
+   Thus a typical position is hundreds of thousands of units.
+   A typical velocity is maybe ten.
+*/
+void set_seconds_per_timestep(KalmanFilter f,
+			      double seconds_per_timestep) {
+  /* unit_scaler accounts for the relation between position and
+     velocity units */
+  double unit_scaler = 0.001;
+  f.state_transition.data[0][2] = unit_scaler * seconds_per_timestep;
+  f.state_transition.data[1][3] = unit_scaler * seconds_per_timestep;
+}
+
+void update_velocity2d(KalmanFilter f, double lat, double lon,
+		       double seconds_since_last_timestep) {
+  set_seconds_per_timestep(f, seconds_since_last_timestep);
   set_matrix(f.observation, lat * 1000.0, lon * 1000.0);
   update(f);
 }
@@ -130,9 +140,9 @@ double get_bearing(KalmanFilter f) {
 }
 
 
-double get_mph(KalmanFilter f, double seconds_per_reading) {
+double get_mph(KalmanFilter f) {
   /* First, let's calculate a unit-independent measurement - the radii
-     of the earth traveled in each timestep. (Presumably this will be
+     of the earth traveled in each second. (Presumably this will be
      a very small number.) */
   double lat, lon, delta_lat, delta_lon;
   get_lat_long(f, &lat, &lon);
@@ -151,11 +161,10 @@ double get_mph(KalmanFilter f, double seconds_per_reading) {
   double sin_half_dlon = sin(delta_lon / 2.0);
   double a = sin_half_dlat * sin_half_dlat + cos(lat1) * cos(lat)
     * sin_half_dlon * sin_half_dlon;
-  double radians_per_timestep = 2 * atan2(sqrt(a), sqrt(1.0 - a));
+  double radians_per_second = 2 * atan2(sqrt(a), sqrt(1.0 - a));
   
   /* Convert units */
-  double miles_per_timestep = radians_per_timestep * EARTH_RADIUS_IN_MILES;
-  double miles_per_second = miles_per_timestep / seconds_per_reading;
+  double miles_per_second = radians_per_second * EARTH_RADIUS_IN_MILES;
   double miles_per_hour = miles_per_second * 60.0 * 60.0;
   return miles_per_hour;
 }

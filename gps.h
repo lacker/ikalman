@@ -22,8 +22,13 @@
    Free with free_filter after using. */
 KalmanFilter alloc_filter_velocity2d();
 
-/* Update the velocity2d model with one timestep of gps data. */
-void update_velocity2d(KalmanFilter f, double lat, double lon);
+/* Set the seconds per timestep in the velocity2d model. */
+void set_seconds_per_timestep(KalmanFilter f,
+			      double seconds_per_timestep);
+
+/* Update the velocity2d model with new gps data. */
+void update_velocity2d(KalmanFilter f, double lat, double lon,
+		       double seconds_since_last_update);
 
 /* Read a lat,long pair from a file.
    Format is lat,long<ignored>
@@ -33,17 +38,15 @@ int read_lat_long(FILE* file, double* lat, double* lon);
 /* Extract a lat long from a velocity2d Kalman filter. */
 void get_lat_long(KalmanFilter f, double* lat, double* lon);
 
-/* Extract velocity with lat-long-per-timestep units from a velocity2d
-   Kalman filter.
-   timestep is the time in seconds between each reading. */
+/* Extract velocity with lat-long-per-second units from a velocity2d
+   Kalman filter. */
 void get_velocity(KalmanFilter f, double* delta_lat, double* delta_lon);
 
 /* Extract a bearing from a velocity2d Kalman filter.
    0 = north, 90 = east, 180 = south, 270 = west */
 double get_bearing(KalmanFilter f);
 
-/* Extract speed in miles per hour from a velocity2d Kalman filter.
-   seconds_per_reading time in seconds between each reading. */
-double get_mph(KalmanFilter f, double seconds_per_reading);
+/* Extract speed in miles per hour from a velocity2d Kalman filter. */
+double get_mph(KalmanFilter f);
 
 #endif

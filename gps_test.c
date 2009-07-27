@@ -27,7 +27,7 @@ void test_read_lat_long() {
 void test_bearing_north() {
   KalmanFilter f = alloc_filter_velocity2d();
   for (int i = 0; i < 100; ++i) {
-    update_velocity2d(f, i * 0.0001, 0.0);
+    update_velocity2d(f, i * 0.0001, 0.0, 1.0);
   }
 
   double bearing = get_bearing(f);
@@ -45,7 +45,7 @@ void test_bearing_north() {
 void test_bearing_east() {
   KalmanFilter f = alloc_filter_velocity2d();
   for (int i = 0; i < 100; ++i) {
-    update_velocity2d(f, 0.0, i * 0.0001);
+    update_velocity2d(f, 0.0, i * 0.0001, 1.0);
   }
 
   double bearing = get_bearing(f);
@@ -57,7 +57,7 @@ void test_bearing_east() {
      3,600,000 seconds, which is 60,000 minutes, which is 1,000
      hours. Since the earth is about 25000 miles around, this means we
      are traveling at about 25 miles per hour. */
-  double mph = get_mph(f, 1.0);
+  double mph = get_mph(f);
   assert(abs(mph - 25.0) < 2.0);
   
   free_filter(f);
@@ -66,7 +66,7 @@ void test_bearing_east() {
 void test_bearing_south() {
   KalmanFilter f = alloc_filter_velocity2d();
   for (int i = 0; i < 100; ++i) {
-    update_velocity2d(f, i * -0.0001, 0.0);
+    update_velocity2d(f, i * -0.0001, 0.0, 1.0);
   }
 
   double bearing = get_bearing(f);
@@ -78,11 +78,29 @@ void test_bearing_south() {
 void test_bearing_west() {
   KalmanFilter f = alloc_filter_velocity2d();
   for (int i = 0; i < 100; ++i) {
-    update_velocity2d(f, 0.0, i * -0.0001);
+    update_velocity2d(f, 0.0, i * -0.0001, 1.0);
   }
 
   double bearing = get_bearing(f);
   assert(abs(bearing - 270.0) < 0.01);
+  
+  free_filter(f);
+}
+
+void test_variable_timestep() {
+  KalmanFilter f = alloc_filter_velocity2d();
+
+  /* Move at a constant speed but taking slower and slower readings */
+  int east_distance = 0;
+  for (int i = 0; i < 20; ++i) {
+    east_distance += i;
+    update_velocity2d(f, 0.0, east_distance * 0.0001, i);
+  }
+
+  double dlat, dlon;
+  get_velocity(f, &dlat, &dlon);
+  assert(abs(dlat) < 0.000001);
+  assert(abs(dlon - 0.0001) < 0.000001);
   
   free_filter(f);
 }
@@ -93,6 +111,7 @@ int main(int argc, char *argv[]) {
   test_bearing_east();
   test_bearing_south();
   test_bearing_west();
+  test_variable_timestep();
   printf("OK\n");
   return 0;
 }
