@@ -46,6 +46,10 @@ void get_velocity(KalmanFilter f, double* delta_lat, double* delta_lon);
    0 = north, 90 = east, 180 = south, 270 = west */
 double get_bearing(KalmanFilter f);
 
+/* Convert a lat, long, delta lat, and delta long into mph.*/
+double calculate_mph(double lat, double lon,
+		     double delta_lat, double delta_lon);
+
 /* Extract speed in miles per hour from a velocity2d Kalman filter. */
 double get_mph(KalmanFilter f);
 

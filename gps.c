@@ -139,14 +139,11 @@ double get_bearing(KalmanFilter f) {
   return bearing;
 }
 
-
-double get_mph(KalmanFilter f) {
+double calculate_mph(double lat, double lon,
+		     double delta_lat, double delta_lon) {
   /* First, let's calculate a unit-independent measurement - the radii
      of the earth traveled in each second. (Presumably this will be
      a very small number.) */
-  double lat, lon, delta_lat, delta_lon;
-  get_lat_long(f, &lat, &lon);
-  get_velocity(f, &delta_lat, &delta_lon);
   
   /* Convert to radians */
   double to_radians = PI / 180.0;
@@ -167,5 +164,12 @@ double get_mph(KalmanFilter f) {
   double miles_per_second = radians_per_second * EARTH_RADIUS_IN_MILES;
   double miles_per_hour = miles_per_second * 60.0 * 60.0;
   return miles_per_hour;
+}
+
+double get_mph(KalmanFilter f) {
+  double lat, lon, delta_lat, delta_lon;
+  get_lat_long(f, &lat, &lon);
+  get_velocity(f, &delta_lat, &delta_lon);
+  return calculate_mph(lat, lon, delta_lat, delta_lon);
 }
 

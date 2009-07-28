@@ -105,6 +105,12 @@ void test_variable_timestep() {
   free_filter(f);
 }
 
+void test_calculate_mph() {
+  double mph = calculate_mph(39.315842, -120.167107,
+			     -0.000031, 0.000003);
+  assert(abs(mph - 7.74) < 0.01);
+}
+
 int main(int argc, char *argv[]) {
   test_read_lat_long();
   test_bearing_north();
@@ -112,6 +118,7 @@ int main(int argc, char *argv[]) {
   test_bearing_south();
   test_bearing_west();
   test_variable_timestep();
+  test_calculate_mph();
   printf("OK\n");
   return 0;
 }
