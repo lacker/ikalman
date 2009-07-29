@@ -158,7 +158,8 @@ double calculate_mph(double lat, double lon,
   double sin_half_dlon = sin(delta_lon / 2.0);
   double a = sin_half_dlat * sin_half_dlat + cos(lat1) * cos(lat)
     * sin_half_dlon * sin_half_dlon;
-  double radians_per_second = 2 * atan2(sqrt(a), sqrt(1.0 - a));
+  double radians_per_second = 2 * atan2(1000.0 * sqrt(a),
+					1000.0 * sqrt(1.0 - a));
   
   /* Convert units */
   double miles_per_second = radians_per_second * EARTH_RADIUS_IN_MILES;
