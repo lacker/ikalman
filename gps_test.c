@@ -1,4 +1,3 @@
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,7 +24,7 @@ void test_read_lat_long() {
 }
 
 void test_bearing_north() {
-  KalmanFilter f = alloc_filter_velocity2d();
+  KalmanFilter f = alloc_filter_velocity2d(1.0);
   for (int i = 0; i < 100; ++i) {
     update_velocity2d(f, i * 0.0001, 0.0, 1.0);
   }
@@ -43,7 +42,7 @@ void test_bearing_north() {
 }
 
 void test_bearing_east() {
-  KalmanFilter f = alloc_filter_velocity2d();
+  KalmanFilter f = alloc_filter_velocity2d(1.0);
   for (int i = 0; i < 100; ++i) {
     update_velocity2d(f, 0.0, i * 0.0001, 1.0);
   }
@@ -64,7 +63,7 @@ void test_bearing_east() {
 }
 
 void test_bearing_south() {
-  KalmanFilter f = alloc_filter_velocity2d();
+  KalmanFilter f = alloc_filter_velocity2d(1.0);
   for (int i = 0; i < 100; ++i) {
     update_velocity2d(f, i * -0.0001, 0.0, 1.0);
   }
@@ -76,7 +75,7 @@ void test_bearing_south() {
 }
 
 void test_bearing_west() {
-  KalmanFilter f = alloc_filter_velocity2d();
+  KalmanFilter f = alloc_filter_velocity2d(1.0);
   for (int i = 0; i < 100; ++i) {
     update_velocity2d(f, 0.0, i * -0.0001, 1.0);
   }
@@ -88,7 +87,7 @@ void test_bearing_west() {
 }
 
 void test_variable_timestep() {
-  KalmanFilter f = alloc_filter_velocity2d();
+  KalmanFilter f = alloc_filter_velocity2d(1.0);
 
   /* Move at a constant speed but taking slower and slower readings */
   int east_distance = 0;

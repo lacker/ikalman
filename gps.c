@@ -7,7 +7,7 @@
 static const double PI = 3.14159265;
 static const double EARTH_RADIUS_IN_MILES = 3963.1676;
 
-KalmanFilter alloc_filter_velocity2d() {
+KalmanFilter alloc_filter_velocity2d(double noise) {
   /* The state model has four dimensions:
      x, y, x', y'
      Each time step we can only observe position, not velocity, so the
@@ -39,8 +39,8 @@ KalmanFilter alloc_filter_velocity2d() {
 
   /* Noise in our observation */
   set_matrix(f.observation_noise_covariance,
-	     pos, 0.0,
-	     0.0, pos);
+	     pos * noise, 0.0,
+	     0.0, pos * noise);
 
   /* The start position is totally unknown, so give a high variance */
   set_matrix(f.state_estimate, 0.0, 0.0, 0.0, 0.0);

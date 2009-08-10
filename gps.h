@@ -19,8 +19,11 @@
    velocity.
    The inherent assumption is that changes in velocity are randomly
    distributed around 0.
+   Noise is a parameter you can use to alter the expected noise.
+   1.0 is the original, and the higher it is, the more a path will be
+   "smoothed".
    Free with free_filter after using. */
-KalmanFilter alloc_filter_velocity2d();
+KalmanFilter alloc_filter_velocity2d(double noise);
 
 /* Set the seconds per timestep in the velocity2d model. */
 void set_seconds_per_timestep(KalmanFilter f,
