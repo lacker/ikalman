@@ -44,6 +44,7 @@ void test_inverse() {
   free_matrix(foo);
   free_matrix(foo_copy);
   free_matrix(bar);
+  free_matrix(identity);
 }
 
 int main(int argc, char *argv[]) {
