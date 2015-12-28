@@ -15,6 +15,10 @@
 #include <stdio.h>
 #include "kalman.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
 /* Create a GPS filter that only tracks two dimensions of position and
    velocity.
    The inherent assumption is that changes in velocity are randomly
@@ -55,5 +59,9 @@ double calculate_mph(double lat, double lon,
 
 /* Extract speed in miles per hour from a velocity2d Kalman filter. */
 double get_mph(KalmanFilter f);
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif

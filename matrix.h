@@ -1,6 +1,10 @@
 #ifndef __MATRIX_H__
 #define __MATRIX_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
 typedef struct {
   /* Dimensions */
   int rows;
@@ -72,5 +76,9 @@ void shear_row(Matrix m, int r1, int r2, double scalar);
    Returns whether the matrix is invertible.
    input is mutated as well by this routine. */
 int destructive_invert_matrix(Matrix input, Matrix output);
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif
