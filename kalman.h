@@ -3,6 +3,10 @@
 
 #include "matrix.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
 /* Refer to http://en.wikipedia.org/wiki/Kalman_filter for
    mathematical details. The naming scheme is that variables get names
    that make sense, and are commented with their analog in
@@ -85,5 +89,9 @@ void update(KalmanFilter f);
 void predict(KalmanFilter f);
 /* Just the estimation phase of update. */
 void estimate(KalmanFilter f);
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif
